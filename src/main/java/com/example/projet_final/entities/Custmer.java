@@ -1,5 +1,6 @@
 package com.example.projet_final.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,8 @@ public class Custmer {
     private String name ;
     private String email ;
     @OneToMany(mappedBy = "custmer",fetch = FetchType.LAZY)
+
+
     private List<BankAccount> bankAccounts ;
 
 }
