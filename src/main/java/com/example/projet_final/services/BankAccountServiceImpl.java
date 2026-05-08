@@ -1,9 +1,6 @@
 package com.example.projet_final.services;
 
-import com.example.projet_final.dtos.BankAccountDto;
-import com.example.projet_final.dtos.CurrentAccountDto;
-import com.example.projet_final.dtos.CustmerDto;
-import com.example.projet_final.dtos.SavingAccountDto;
+import com.example.projet_final.dtos.*;
 import com.example.projet_final.entities.*;
 import com.example.projet_final.enums.OperationType;
 import com.example.projet_final.exceptions.BalanceNotSufisantException;
@@ -16,6 +13,8 @@ import com.example.projet_final.repositories.CustomerRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -156,8 +155,19 @@ public class BankAccountServiceImpl implements  BankAccountService{
 
     }
     @Override
-    public List<BankAccount> bankAccounts() {
-        return  bankAccountRepository.findAll();
+    public List<BankAccountDto> bankAccounts() {
+        List<BankAccount> bankAccounts =   bankAccountRepository.findAll();
+        List<BankAccountDto> bankAccountDtos = bankAccounts.stream().map(bankAccount -> {
+            if(bankAccount instanceof  SavingAccount){
+                SavingAccount savingAccount = (SavingAccount) bankAccount;
+                return dtoMapper.fromSavingAccount(savingAccount);
+            }else{
+                CurrentAccount currentAccount = (CurrentAccount) bankAccount;
+                return dtoMapper.fromCurrentAccount(currentAccount);
+            }
+
+        }).collect(Collectors.toList());
+        return bankAccountDtos;
     }
     @Override
     public CustmerDto getCustmer(Long id) throws CustomerNotFoundException {
@@ -176,6 +186,26 @@ public class BankAccountServiceImpl implements  BankAccountService{
     @Override
     public void deleteCustmer(Long id) {
         customerRepository.deleteById(id);
+    }
+    @Override
+    public List<AccountOperationDto> accountHistory(String accountId){
+        List<AccountOperation> accountOperations = accountOperationRepository.findByBankAccountId(accountId);
+        return  accountOperations.stream().map(op->dtoMapper.fromAccountOperation(op)).collect(Collectors.toList());
+    }
+
+    @Override
+    public AccountHistoryDto getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException {
+        BankAccount bankAccount = bankAccountRepository.findById(accountId).orElseThrow(()-> new BankAccountNotFoundException("bank account not found"));
+        Page<AccountOperation> accountOperations = accountOperationRepository.findByBankAccountId(accountId, PageRequest.of(page, size));
+        AccountHistoryDto accountHistoryDto = new AccountHistoryDto();
+        List<AccountOperationDto> accountOperationDtos =accountOperations.getContent().stream().map(op->dtoMapper.fromAccountOperation(op)).collect(Collectors.toList());
+        accountHistoryDto.setAccountOperationDtos(accountOperationDtos);
+        accountHistoryDto.setAccountId(bankAccount.getId());
+        accountHistoryDto.setBalance(bankAccount.getBalance());
+        accountHistoryDto.setPageSize(size);
+        accountHistoryDto.setCurrentPage(page);
+        accountHistoryDto.setTotalPages(accountOperations.getTotalPages());
+        return accountHistoryDto;
     }
 }
 

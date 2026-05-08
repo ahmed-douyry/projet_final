@@ -1,13 +1,6 @@
 package com.example.projet_final.services;
 
-import com.example.projet_final.dtos.BankAccountDto;
-import com.example.projet_final.dtos.CurrentAccountDto;
-import com.example.projet_final.dtos.CustmerDto;
-import com.example.projet_final.dtos.SavingAccountDto;
-import com.example.projet_final.entities.BankAccount;
-import com.example.projet_final.entities.CurrentAccount;
-import com.example.projet_final.entities.Custmer;
-import com.example.projet_final.entities.SavingAccount;
+import com.example.projet_final.dtos.*;
 import com.example.projet_final.exceptions.BalanceNotSufisantException;
 import com.example.projet_final.exceptions.BankAccountNotFoundException;
 import com.example.projet_final.exceptions.CustomerNotFoundException;
@@ -24,13 +17,17 @@ public interface BankAccountService {
     void credit(String accountId,double amount, String description) throws BankAccountNotFoundException;
     void transfer(String accountIdSource ,String accountIdDestination , double amount) throws BankAccountNotFoundException, BalanceNotSufisantException;
 
-    List<BankAccount> bankAccounts();
+    List<BankAccountDto> bankAccounts();
 
     CustmerDto getCustmer(Long id) throws CustomerNotFoundException;
 
     CustmerDto updateCustmer(CustmerDto custmerdto);
 
     void deleteCustmer(Long id) ;
+
+    List<AccountOperationDto> accountHistory(String accountId);
+
+    AccountHistoryDto getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException;
 //    List<BankAccount> bankAccounts();
 
 

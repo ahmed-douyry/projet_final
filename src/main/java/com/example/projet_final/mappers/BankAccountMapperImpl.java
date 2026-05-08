@@ -1,8 +1,10 @@
 package com.example.projet_final.mappers;
 
+import com.example.projet_final.dtos.AccountOperationDto;
 import com.example.projet_final.dtos.CurrentAccountDto;
 import com.example.projet_final.dtos.CustmerDto;
 import com.example.projet_final.dtos.SavingAccountDto;
+import com.example.projet_final.entities.AccountOperation;
 import com.example.projet_final.entities.CurrentAccount;
 import com.example.projet_final.entities.Custmer;
 import com.example.projet_final.entities.SavingAccount;
@@ -27,6 +29,7 @@ public class BankAccountMapperImpl {
         CurrentAccountDto currentAccountDto = new CurrentAccountDto();
         BeanUtils.copyProperties(currentAccount,currentAccountDto);
         currentAccountDto.setCustmerDto(fromcustomer(currentAccount.getCustmer()));
+        currentAccountDto.setType(currentAccount.getClass().getSimpleName());
         return currentAccountDto;
 
     }
@@ -40,6 +43,7 @@ public class BankAccountMapperImpl {
         SavingAccountDto savingAccountDto = new SavingAccountDto();
         BeanUtils.copyProperties(savingAccount,savingAccountDto);
         savingAccountDto.setCustmerDto(fromcustomer(savingAccount.getCustmer()));
+        savingAccountDto.setType(savingAccount.getClass().getSimpleName());
         return  savingAccountDto;
  }
  public SavingAccount fromSavingAccountDto(SavingAccountDto savingAccountDto){
@@ -47,5 +51,10 @@ public class BankAccountMapperImpl {
         BeanUtils.copyProperties(savingAccountDto,savingAccount);
         savingAccount.setCustmer(fromcustomerDto(savingAccountDto.getCustmerDto()));
         return  savingAccount;
+ }
+ public AccountOperationDto fromAccountOperation(AccountOperation accountOperation){
+        AccountOperationDto accountOperationDto = new AccountOperationDto();
+        BeanUtils.copyProperties(accountOperation,accountOperationDto);
+        return accountOperationDto;
  }
 }

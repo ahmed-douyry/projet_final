@@ -1,6 +1,9 @@
 package com.example.projet_final;
 
+import com.example.projet_final.dtos.BankAccountDto;
+import com.example.projet_final.dtos.CurrentAccountDto;
 import com.example.projet_final.dtos.CustmerDto;
+import com.example.projet_final.dtos.SavingAccountDto;
 import com.example.projet_final.entities.*;
 import com.example.projet_final.enums.AccountStatus;
 import com.example.projet_final.enums.OperationType;
@@ -38,19 +41,25 @@ public class ProjetFinalApplication {
                 try {
                     bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, custmer.getId());
                     bankAccountService.saveSavingBankAccount(Math.random() * 120000, 5.5, custmer.getId());
-                    List<BankAccount> bankAccounts = bankAccountService.bankAccounts();
-                    for(BankAccount bankAccount:bankAccounts){
-                        for (int i = 0; i < 20; i++) {
-                            bankAccountService.credit(bankAccount.getId(), Math.random() * 120000, "Credit");
-                            bankAccountService.debit(bankAccount.getId(), Math.random() * 10000, "Debit");
 
-                        }
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
+            List<BankAccountDto> bankAccounts = bankAccountService.bankAccounts();
+            for(BankAccountDto bankAccount:bankAccounts){
+                for (int i = 0; i < 20; i++) {
+                    String accountId ;
+                    if(bankAccount instanceof SavingAccountDto){
+                        accountId = ((SavingAccountDto) bankAccount).getId();
+                    }else {
+                        accountId = ((CurrentAccountDto)bankAccount).getId();
+                    }
+                    bankAccountService.credit(accountId, Math.random() * 120000, "Credit");
+                    bankAccountService.debit(accountId, Math.random() * 10000, "Debit");
 
+                }
+            }
 
         };
     }}
