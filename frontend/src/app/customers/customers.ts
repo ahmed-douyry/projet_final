@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../services/Customer/customers';
+import { catchError, finalize, Observable, throwError } from 'rxjs';
+import { Customer } from '../model/customer.model';
 
 @Component({
   selector: 'app-customers',
@@ -9,22 +11,24 @@ import { CustomerService } from '../services/Customer/customers';
   styleUrl: './customers.css',
 })
 export class Customers implements OnInit {
-  customers: any;
-  errorMessage !: object;
+  customers$!: Observable<Array<Customer>>;
+  errorMessage: any = null;
+  loading = false;
   constructor(private customerService: CustomerService) {
 
   }
   ngOnInit(): void {
-    this.customerService.getCustomers().subscribe({ 
-      next: (data) => {
-        console.log(data);
-        this.customers = data;
-      },
-      error: (err) => {
-        console.log(err);
-        this.errorMessage = err.message;
-      }
-    });
+    this.loading = true;
+    this.errorMessage = null;
+    this.customers$ = this.customerService.getCustomers().pipe(
+      catchError((error) => {
+        this.errorMessage = error;
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.loading = false;
+      })
+    );
   }
 
 }
