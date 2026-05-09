@@ -11,9 +11,21 @@
                 </div>
             </div>
 
-            <div class="card-body p-0">
+            <div class="card-body p-0 mt-3">
+                <div *ngIf="searchFormGroup">
+                    <form action="" [formGroup]="searchFormGroup" (ngSubmit)="handleSearchCustomer()" class="customers-search-form">
+                    <div class="input-group">
+                        <input type="text" formControlName="keyword" class="form-control" placeholder="Search by name or email…">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi-search"></i>
+                        </button>
+                    </div>
+
+                </form>
+
+                </div>
                 <ng-container *ngIf="customers.length > 0; else emptyCustomers">
-                    <div class="table-responsive">
+                    <div class="table-responsive mt-3" >
                         <table class="table table-hover table-striped align-middle mb-0 customers-table">
                             <thead>
                                 <tr>
@@ -27,9 +39,13 @@
                                     <td class="text-muted">{{ customer.id }}</td>
                                     <td class="fw-semibold">{{ customer.name }}</td>
                                     <td>
-                                        <a class="text-decoration-none" href="mailto:{{ customer.email }}">
                                             {{ customer.email }}
-                                        </a>
+                                        
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger" (click)="handleDeleteCustomer(customer.id)">
+                                            <i class="bi-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>

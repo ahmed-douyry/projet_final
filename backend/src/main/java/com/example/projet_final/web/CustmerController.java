@@ -21,6 +21,10 @@ public class CustmerController {
     public List<CustmerDto> custmers(){
         return bankAccountService.listCustmers();
     }
+    @GetMapping("/search")
+    public List<CustmerDto> searhCustmers(@RequestParam(name = "keyword" , defaultValue = "") String keyword ){
+        return bankAccountService.searchCustmers(keyword);
+    }
     @GetMapping("/{id}")
     public CustmerDto getcusCustmer(@PathVariable(name = "id") Long id) throws CustomerNotFoundException {
         return  bankAccountService.getCustmer(id);
