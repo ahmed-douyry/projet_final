@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomerService } from '../services/Customer/customers';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-new-custmer',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,CommonModule],
   templateUrl: './new-custmer.html',
   styleUrl: './new-custmer.css',
 })
@@ -24,6 +25,7 @@ export class NewCustmer implements OnInit {
     this.customerService.saveCustomer(customer).subscribe({
       next: (data) => {
         alert("customer saved successfully");
+        this.newCustmerFormGroup.reset();
         this.newCustmerFormGroup.reset();
         this.router.navigate(['/customers']);
 
