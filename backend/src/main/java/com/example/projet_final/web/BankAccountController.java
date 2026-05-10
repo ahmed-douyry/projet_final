@@ -44,5 +44,18 @@ public class BankAccountController {
         return bankAccountService.getAccountHistory(accountId,page,size);
     }
 
+    @PostMapping("/accounts/debit")
+    public void debit(@RequestParam String accountId, @RequestParam double amount, @RequestParam String description) throws Exception {
+        bankAccountService.debit(accountId, amount, description);
+    }
 
+    @PostMapping("/accounts/credit")
+    public void credit(@RequestParam String accountId, @RequestParam double amount, @RequestParam String description) throws Exception {
+        bankAccountService.credit(accountId, amount, description);
+    }
+
+    @PostMapping("/accounts/transfer")
+    public void transfer(@RequestParam String accountSource, @RequestParam String accountDestination, @RequestParam double amount) throws Exception {
+        bankAccountService.transfer(accountSource, accountDestination, amount);
+    }
 }
