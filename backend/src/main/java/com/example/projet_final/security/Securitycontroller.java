@@ -34,6 +34,7 @@ public class Securitycontroller {
     }
     @PostMapping("/login")
     public Map<String,String>login (String username,String password){
+        System.out.println("Login attempt with username: " + username + " and password: " + password);
         Authentication authentication = authenticationManager.
                 authenticate(new UsernamePasswordAuthenticationToken(username, password));
         Instant instant = Instant.now();
@@ -47,7 +48,7 @@ public class Securitycontroller {
 
         JwtEncoderParameters jwtEncoderParameters =
                 JwtEncoderParameters.from(
-                        JwsHeader.with(MacAlgorithm.HS512).build(),
+                        JwsHeader.with(MacAlgorithm.HS256).build(),
                         jwtClaimsSet
                 );
 
