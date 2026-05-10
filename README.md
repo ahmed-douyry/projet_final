@@ -82,5 +82,4 @@ projetfinal/
     └── angular.json          # Fichier de configuration Angular
 ```
 
-## 📝 Auteur
-Ce projet a été développé en tant que projet final / TP.
+
